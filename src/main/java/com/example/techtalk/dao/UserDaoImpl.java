@@ -5,17 +5,19 @@ import com.example.techtalk.entity.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDaoImpl implements UserDao{
 
     @Override
-    public Long save(User user) {
+    public Long save(User user) throws SQLException {
         Connection con = DataBaseConnection.getConnection();
+        PreparedStatement ps = null;
         try{
             String sql = "INSERT INTO user(name) values(?)";
             String generatedColumns[] = { "ID" };
 
-            PreparedStatement ps = con.prepareStatement(sql, generatedColumns);
+            ps = con.prepareStatement(sql, generatedColumns);
             ps.setString(1, user.getName());
             ps.execute();
             ResultSet rs = ps.getGeneratedKeys();
@@ -26,6 +28,13 @@ public class UserDaoImpl implements UserDao{
         }catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
+        } finally {
+            if (ps != null) {
+                ps.close();
+            }
+            if (con != null) {
+                con.close();
+            }
         }
     }
 

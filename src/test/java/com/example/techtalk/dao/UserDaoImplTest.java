@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.example.techtalk.entity.User;
+import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -12,7 +13,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 class UserDaoImplTest {
 
     @Test
-    void save() {
+    void save() throws SQLException {
         // given
         UserDao userDao = new UserDaoImpl();
 
@@ -25,7 +26,7 @@ class UserDaoImplTest {
     }
 
     @Test
-    void findById() {
+    void findById() throws SQLException {
         // given
         UserDao userDao = new UserDaoImpl();
         User user = new User("name");
