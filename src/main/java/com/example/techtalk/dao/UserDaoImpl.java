@@ -1,60 +1,46 @@
 package com.example.techtalk.dao;
 
-import com.example.techtalk.db.DataBaseConnection;
 import com.example.techtalk.entity.User;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
-public class UserDaoImpl implements UserDao{
+@Repository
+public class UserDaoImpl implements UserDao {
+
+    JdbcTemplate jdbcTemplate;
+
+    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
-    public Long save(User user) throws SQLException {
-        Connection con = DataBaseConnection.getConnection();
-        PreparedStatement ps = null;
-        try{
-            String sql = "INSERT INTO user(name) values(?)";
-            String generatedColumns[] = { "ID" };
+    public Long save(User user) {
+        final String sql = "insert into user (name) values (?)";
 
-            ps = con.prepareStatement(sql, generatedColumns);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, user.getName());
-            ps.execute();
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                return rs.getLong(1);
-            }
-            return null;
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        } finally {
-            if (ps != null) {
-                ps.close();
-            }
-            if (con != null) {
-                con.close();
-            }
-        }
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 
     @Override
     public User findById(Long id) {
-        Connection con = DataBaseConnection.getConnection();
-        try{
-            String sql = "SELECT * FROM user WHERE id = ?";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setLong(1, id);
-            ps.execute();
-            ResultSet rs = ps.getResultSet();
-            if (rs.next()) {
-                return new User(rs.getLong("id"),
-                    rs.getString("name"));
-            }
-            return null;
-        }catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+        final String sql = "select * from user where id = ?";
+        return jdbcTemplate.queryForObject(sql, userMapper(), id);
+    }
+
+    private RowMapper<User> userMapper() {
+        return (resultSet, rowNum) -> new User(
+            resultSet.getLong("id"),
+            resultSet.getString("name")
+        );
     }
 }
