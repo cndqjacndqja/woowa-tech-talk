@@ -1,49 +1,42 @@
 package com.example.techtalk.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import com.example.techtalk.entity.User;
-import java.sql.SQLException;
-
-import javax.persistence.EntityManager;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.techtalk.entity.User;
+
 @SpringBootTest
 @Transactional
-class UserDaoImplTest {
+class UserRepositoryTest {
 
     @Autowired
-    EntityManager entityManager;
-
-    @Autowired
-    UserDao userDao;
+    UserRepository userRepository;
 
     @Test
-    void save() throws SQLException {
+    void save() {
         // given
 
         // when
         User user = new User("name");
-        Long savedId = userDao.save(user);
+        Long savedId = userRepository.save(user).getId();
 
         // then
         assertThat(savedId).isNotNull();
     }
 
     @Test
-    void findById() throws SQLException {
+    void findById() {
         // given
-        UserDao userDao = new UserDaoImpl(entityManager);
         User user = new User("name");
-        Long savedId = userDao.save(user);
+        Long savedId = userRepository.save(user).getId();
 
         //when
-        User savedUser = userDao.findById(savedId);
+        User savedUser = userRepository.findById(savedId).orElseThrow();
 
         // then
         assertAll(
