@@ -5,21 +5,28 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.example.techtalk.entity.User;
 import java.sql.SQLException;
+
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
+@Transactional
 class UserDaoImplTest {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    EntityManager entityManager;
+
+    @Autowired
+    UserDao userDao;
 
     @Test
     void save() throws SQLException {
         // given
-        UserDao userDao = new UserDaoImpl(jdbcTemplate);
 
         // when
         User user = new User("name");
@@ -32,12 +39,12 @@ class UserDaoImplTest {
     @Test
     void findById() throws SQLException {
         // given
-        UserDao userDao = new UserDaoImpl(jdbcTemplate);
+        UserDao userDao = new UserDaoImpl(entityManager);
         User user = new User("name");
         Long savedId = userDao.save(user);
 
         //when
-        User savedUser = userDao.findById(savedId);
+        User savedUser = userDao.findOne(savedId);
 
         // then
         assertAll(
