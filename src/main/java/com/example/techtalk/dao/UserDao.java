@@ -7,5 +7,5 @@ public interface UserDao {
 
     Long save(User user) throws SQLException;
 
-    User findOne(Long id);
+    User findById(Long id);
 }
