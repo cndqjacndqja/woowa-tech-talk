@@ -29,7 +29,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findOne(Long id) {
+    public User findById(Long id) {
         return em.find(User.class, id);
     }
 }
