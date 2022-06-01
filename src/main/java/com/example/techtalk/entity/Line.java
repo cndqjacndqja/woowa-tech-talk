@@ -18,16 +18,8 @@ public class Line {
 
     private String name;
 
-    @OneToMany
-    private List<Section> sections = new ArrayList<>();
-
     public Line(String name) {
         this.name = name;
-    }
-
-    public Line(String name, Section section) {
-        this.name = name;
-        this.sections.add(section);
     }
 
     public Line() {
@@ -39,9 +31,5 @@ public class Line {
 
     public Long getId() {
         return id;
-    }
-
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
     }
 }

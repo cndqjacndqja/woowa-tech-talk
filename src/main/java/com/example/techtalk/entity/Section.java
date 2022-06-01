@@ -34,13 +34,7 @@ public class Section {
         this.line = line;
     }
 
-    public Section(Station upStation, Station downStation) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-    }
-
     public Section() {
-
     }
 
     public Long getId() {
@@ -53,9 +47,5 @@ public class Section {
 
     public Station getDownStation() {
         return downStation;
-    }
-
-    public void setLine(Line line) {
-        this.line = line;
     }
 }
