@@ -32,18 +32,20 @@ public class TestController {
         Station downStation= new Station("강남역");
         Station newStation= new Station("역삼역");
 
-        Line line = new Line("2호선");
+        Section section1 = new Section(upStation, downStation);
+        Section section2 = new Section(downStation, newStation);
 
-        Section section1 = new Section(upStation, downStation, line);
-        Section section2 = new Section(downStation, newStation, line);
-
+        Line line = new Line("2호선", List.of(section1, section2));
         stationDao.save(upStation);
         stationDao.save(downStation);
         stationDao.save(newStation);
-        Line save = lineDao.save(line);
+
+        Line savedLine = lineDao.save(line);
         Section savedSection1  = sectionDao.save(section1);
         Section savedSection2  = sectionDao.save(section2);
 
+        savedSection1.setLine(savedLine);
+        savedSection2.setLine(savedLine);
 
         Section byId = sectionDao.findById(savedSection1.getId());
         return ResponseEntity.ok().body(byId);
