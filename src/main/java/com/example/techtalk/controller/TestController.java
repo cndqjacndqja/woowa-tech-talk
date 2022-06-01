@@ -29,23 +29,24 @@ public class TestController {
     @GetMapping("/line")
     public ResponseEntity saveLine() {
         Station upStation = new Station("교대역");
-        Station downStation= new Station("교대역");
-        Section section = new Section(upStation, downStation);
-        Line line = new Line("2호선", section);
+        Station downStation= new Station("강남역");
+        Station newStation= new Station("역삼역");
+
+        Line line = new Line("2호선");
+
+        Section section1 = new Section(upStation, downStation, line);
+        Section section2 = new Section(downStation, newStation, line);
 
         stationDao.save(upStation);
         stationDao.save(downStation);
-        Section savedSection  = sectionDao.save(section);
-
+        stationDao.save(newStation);
         Line save = lineDao.save(line);
-        section.setLine(save);
+        Section savedSection1  = sectionDao.save(section1);
+        Section savedSection2  = sectionDao.save(section2);
 
 
-
-
-        Section byId = sectionDao.findById(savedSection.getId());
+        Section byId = sectionDao.findById(savedSection1.getId());
         return ResponseEntity.ok().body(byId);
-
     }
 
 }
