@@ -12,14 +12,23 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Line {
+
     @Id @GeneratedValue
     @Column(name = "line_id")
     private Long id;
 
     private String name;
 
+    @OneToMany(mappedBy = "line")
+    private List<Section> sections = new ArrayList<>();
+
     public Line(String name) {
         this.name = name;
+    }
+
+    public Line(String name, List<Section> sections) {
+        this.name = name;
+        this.sections.addAll(sections);
     }
 
     public Line() {
